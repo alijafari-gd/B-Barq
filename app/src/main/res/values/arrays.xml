@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="power_reminder_titles">
+        <item>Power Outage Coming Soon ⚡</item>
+        <item>⚡Make Sure To Charge Your Phone !</item>
+        <item>Electricity Will Be Off Soon</item>
+        <item>Time to Save Your Work!</item>
+        <item>Power Shutdown Alert</item>
+        <item>Charge Up! Power Going Off</item>
+        <item>Lights Out Soon! 🔌</item>
+        <item>Another day, another blackout.</item>
+        <item>آب و برق را مجانی میکنیم !</item>
+    </string-array>
+    <!-- res/values/strings.xml -->
+    <string-array name="no_power_cut_messages">
+        <item>Phew! No blackout today (hopefully).</item>
+        <item>No power cuts scheduled. Your fridge thanks you.</item>
+        <item>No power cuts scheduled. (or not yet)</item>
+        <item>No power cuts scheduled… for now.</item>
+        <item>No power cuts scheduled.</item>
+        <item>Power is safe today. Celebrate responsibly!</item>
+    </string-array>
+
+</resources>
