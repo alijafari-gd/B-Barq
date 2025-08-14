@@ -16,15 +16,16 @@ import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.core.widget.addTextChangedListener
 import com.aliJafari.bbarq.adapters.OutagesAdapter
+import com.aliJafari.bbarq.data.Outage
 import com.aliJafari.bbarq.data.OutageRepository
 import com.aliJafari.bbarq.databinding.ActivityMainBinding
+import io.appmetrica.analytics.AppMetrica
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -69,6 +70,8 @@ class MainActivity : AppCompatActivity() {
                 prefs.edit(commit = true) {
                     putString("billId", text.toString())
                 }
+                val eventParameters = mapOf("bill id" to text)
+                AppMetrica.reportEvent("New person", eventParameters)
                 binding.main.refresh.performClick()
             }
         }
@@ -113,7 +116,6 @@ class MainActivity : AppCompatActivity() {
         if (prefs.getString("billId", "")?.length == 13) {
             requestCurrentData()
         }
-
     }
 
     @SuppressLint("SetTextI18n")
@@ -229,7 +231,8 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_settings -> {
-                Toast.makeText(this, "lazy ahh will add later", Toast.LENGTH_SHORT).show()
+                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/alijafari-gd/B-Barq"))
+                startActivity(browserIntent)
                 true
             }
 

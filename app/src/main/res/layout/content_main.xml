@@ -242,15 +242,21 @@
             android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:orientation="vertical"
+            android:layout_below="@id/networkError"
             tools:itemCount="1"
-            tools:visibility="gone"
             tools:listitem="@layout/schedule_info_layout"/>
 
+        <include layout="@layout/error_layout" android:id="@+id/networkError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_below="@id/progress"/>
         <com.google.android.material.progressindicator.LinearProgressIndicator
             android:id="@+id/progress"
+            android:layout_marginBottom="5dp"
+            android:visibility="gone"
             android:layout_width="match_parent" android:layout_height="wrap_content"
             android:indeterminate="true" />
-        <include layout="@layout/error_layout" android:id="@+id/networkError" android:visibility="gone"/>
         <TextView
             android:id="@+id/empty_list"
             android:layout_width="match_parent"
