@@ -49,3 +49,5 @@ Contributions are welcome! If you have ideas, improvements, or bug fixes, feel f
 ## License
 
 MIT License
+
+### Made with love (and frequent power cuts) by [AJ](https://github.com/alijafari-gd/). Inspired by his autistic friend.
