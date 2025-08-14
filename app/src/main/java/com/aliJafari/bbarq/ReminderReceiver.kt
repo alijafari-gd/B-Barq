@@ -12,31 +12,34 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.aliJafari.bbarq.data.Outage
 import saman.zamani.persiandate.PersianDate
-import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Locale
 import java.util.TimeZone
 
 class ReminderReceiver : BroadcastReceiver() {
     val channelId = "outage_reminder"
     override fun onReceive(context: Context, intent: Intent) {
-        Log.e("TAG", "onReceive: received shit", )
+        Log.e("TAG", "onReceive: received shit")
         val startTime = intent.getStringExtra("startTime")
         val endTime = intent.getStringExtra("endTime")
 
         val titles = context.resources.getStringArray(R.array.power_reminder_titles)
         val randomTitle = titles.random()
 
-        val notificationManager = context.getSystemService(android.app.NotificationManager::class.java)
+        val notificationManager = context.getSystemService(NotificationManager::class.java)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 channelId, "Blackout Checker", NotificationManager.IMPORTANCE_LOW
             )
-            context.getSystemService(NotificationManager::class.java)?.createNotificationChannel(channel)
+            context.getSystemService(NotificationManager::class.java)
+                ?.createNotificationChannel(channel)
         }
-        notificationManager.notify(intent.hashCode(),NotificationCompat.Builder(context, channelId).setContentTitle(randomTitle)
-            .setContentText("Power outage from $startTime to $endTime").setSilent(false).setGroup("outage")
-            .setSmallIcon(R.drawable.electricity_caution_svgrepo_com).build())
+        notificationManager.notify(
+            intent.hashCode(),
+            NotificationCompat.Builder(context, channelId).setContentTitle(randomTitle)
+                .setContentText("Power outage from $startTime to $endTime").setSilent(false)
+                .setGroup("outage")
+                .setSmallIcon(R.drawable.electricity_caution_svgrepo_com).build()
+        )
     }
 }
 
@@ -49,14 +52,15 @@ fun scheduleReminder(context: Context, outage: Outage) {
 
         return cal.timeInMillis
     }
+
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
     val intent = Intent(context, ReminderReceiver::class.java).also {
         it.putExtra(
-            "startTime" , outage.startTime
+            "startTime", outage.startTime
         )
         it.putExtra(
-            "endTime" , outage.endTime
+            "endTime", outage.endTime
         )
     }
     val pDate = PersianDate().also {
@@ -77,7 +81,7 @@ fun scheduleReminder(context: Context, outage: Outage) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         if (alarmManager.canScheduleExactAlarms().not()) return
     }
-    Log.e("TAG", "scheduleReminder: ${time}", )
+    Log.e("TAG", "scheduleReminder: ${time}")
     alarmManager.cancel(pendingIntent)
     alarmManager.setExactAndAllowWhileIdle(
         AlarmManager.RTC_WAKEUP,

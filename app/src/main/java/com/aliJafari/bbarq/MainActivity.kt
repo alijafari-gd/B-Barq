@@ -22,7 +22,6 @@ import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.core.widget.addTextChangedListener
 import com.aliJafari.bbarq.adapters.OutagesAdapter
-import com.aliJafari.bbarq.data.Outage
 import com.aliJafari.bbarq.data.OutageRepository
 import com.aliJafari.bbarq.databinding.ActivityMainBinding
 import io.appmetrica.analytics.AppMetrica
@@ -38,7 +37,7 @@ class MainActivity : AppCompatActivity() {
     private var isLoading = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        prefs = applicationContext.getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
+        prefs = applicationContext.getSharedPreferences("my_prefs", MODE_PRIVATE)
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -180,7 +179,7 @@ class MainActivity : AppCompatActivity() {
     private fun checkPermissions() {
         binding.main.batteryError.visibility = View.GONE
         binding.main.alarmsAndRemindersError.visibility = View.GONE
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
         val canSchedule = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             alarmManager.canScheduleExactAlarms()
         } else {
@@ -205,7 +204,7 @@ class MainActivity : AppCompatActivity() {
             binding.main.alarmsAndRemindersError.setOnClickListener { binding.main.alarmsAndRemindersButton.performClick() }
         }
 
-        val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
+        val powerManager = getSystemService(POWER_SERVICE) as PowerManager
         val isIgnoring = powerManager.isIgnoringBatteryOptimizations(packageName)
         if (!isIgnoring) {
             binding.main.batteryError.visibility = View.VISIBLE
