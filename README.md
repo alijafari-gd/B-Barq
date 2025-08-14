@@ -25,7 +25,7 @@ The service checks the outage source every hour, displays the latest schedules i
 
 ## Installation
 
-1. Download the latest APK from [Releases](./releases).
+1. Download the latest APK from [Releases](https://github.com/alijafari-gd/B-Barq/releases).
 2. Install it on your device.
 3. Enter your Bill ID, grant permissions, and start the service.
 
