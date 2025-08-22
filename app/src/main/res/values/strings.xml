@@ -58,4 +58,5 @@
     <string name="alarm_permissoin_subtitle">Allow this to let the app schedule reminders</string>
     <string name="refresh">Refresh</string>
     <string name="action_about">About</string>
+    <string name="title_activity_login">LoginActivity</string>
 </resources>

@@ -14,8 +14,11 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import androidx.core.app.NotificationCompat
-import com.aliJafari.bbarq.data.Outage
-import com.aliJafari.bbarq.data.OutageRepository
+import com.aliJafari.bbarq.data.model.Outage
+import com.aliJafari.bbarq.data.repository.OutageRepository
+import com.aliJafari.bbarq.utils.BillIDNot13Chars
+import com.aliJafari.bbarq.utils.BillIDNotFoundException
+import com.aliJafari.bbarq.utils.RequestUnsuccessful
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,7 +27,7 @@ class ForegroundService : Service() {
 
     private var billId: String = ""
     val handler = Handler(Looper.getMainLooper())
-    private val repository = OutageRepository()
+    private val repository = OutageRepository(applicationContext)
     private lateinit var notificationManager: NotificationManager
     private lateinit var prefs: SharedPreferences
     val channelId = "blackout_checker_channel"
@@ -77,7 +80,7 @@ class ForegroundService : Service() {
     private fun scheduleReminder(outages: List<Outage>) {
         outages.forEach {
             if (prefs.getBoolean("reminder", false)) {
-                scheduleReminder(
+                com.aliJafari.bbarq.utils.scheduleReminder(
                     applicationContext, it
                 )
             }

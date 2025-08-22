@@ -1,8 +1,8 @@
-package com.aliJafari.bbarq
+package com.aliJafari.bbarq.ui.main
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlarmManager
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -21,9 +21,17 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.core.widget.addTextChangedListener
+import com.aliJafari.bbarq.utils.BillIDNot13Chars
+import com.aliJafari.bbarq.utils.BillIDNotFoundException
+import com.aliJafari.bbarq.ForegroundService
+import com.aliJafari.bbarq.R
+import com.aliJafari.bbarq.utils.RequestUnsuccessful
 import com.aliJafari.bbarq.adapters.OutagesAdapter
-import com.aliJafari.bbarq.data.OutageRepository
+import com.aliJafari.bbarq.data.local.AuthStorage
+import com.aliJafari.bbarq.data.repository.OutageRepository
 import com.aliJafari.bbarq.databinding.ActivityMainBinding
+import com.aliJafari.bbarq.isServiceRunning
+import com.aliJafari.bbarq.ui.auth.LoginActivity
 import io.appmetrica.analytics.AppMetrica
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -40,10 +48,11 @@ class MainActivity : AppCompatActivity() {
         prefs = applicationContext.getSharedPreferences("my_prefs", MODE_PRIVATE)
         super.onCreate(savedInstanceState)
 
+        testToken()
         binding = ActivityMainBinding.inflate(layoutInflater)
 
         val canPostNotifications =
-            checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED || Build.VERSION.SDK_INT <= Build.VERSION_CODES.TIRAMISU
+            checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED || Build.VERSION.SDK_INT <= Build.VERSION_CODES.TIRAMISU
         binding.main.reminderSwitch.isChecked =
             canPostNotifications && prefs.getBoolean("reminder", false)
         binding.main.reminderSwitch.setOnCheckedChangeListener { _, isChecked ->
@@ -52,7 +61,7 @@ class MainActivity : AppCompatActivity() {
                 prefs.edit(commit = true) { putBoolean("reminder", isChecked) }
             } else {
                 @SuppressLint("InlinedApi") requestPermissions(
-                    arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 1002
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1002
                 )
             }
         }
@@ -117,6 +126,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun testToken() {
+        if (AuthStorage(this).getToken()==null){
+            startActivity(
+                Intent(this, LoginActivity::class.java)
+            )
+        }
+    }
+
     @SuppressLint("SetTextI18n")
     private fun requestCurrentData() {
         if (isLoading) return
@@ -126,7 +143,7 @@ class MainActivity : AppCompatActivity() {
         binding.main.progress.isActivated = true
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                OutageRepository().sendRequest(prefs.getString("billId", "").toString()) {
+                OutageRepository(applicationContext).sendRequest(prefs.getString("billId", "").toString()) {
                     runOnUiThread {
                         binding.main.progress.visibility = View.GONE
                         binding.main.progress.isActivated = false
@@ -190,7 +207,7 @@ class MainActivity : AppCompatActivity() {
             binding.main.alarmsAndRemindersButton.setOnClickListener {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     if (ContextCompat.checkSelfPermission(
-                            this, android.Manifest.permission.POST_NOTIFICATIONS
+                            this, Manifest.permission.POST_NOTIFICATIONS
                         ) != PackageManager.PERMISSION_GRANTED
                     ) {
                         val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
@@ -230,7 +247,8 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_settings -> {
-                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/alijafari-gd/B-Barq"))
+                val browserIntent =
+                    Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/alijafari-gd/B-Barq"))
                 startActivity(browserIntent)
                 true
             }

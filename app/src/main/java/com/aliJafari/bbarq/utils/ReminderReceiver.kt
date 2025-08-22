@@ -1,4 +1,4 @@
-package com.aliJafari.bbarq
+package com.aliJafari.bbarq.utils
 
 import android.app.AlarmManager
 import android.app.NotificationChannel
@@ -10,7 +10,8 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import com.aliJafari.bbarq.data.Outage
+import com.aliJafari.bbarq.R
+import com.aliJafari.bbarq.data.model.Outage
 import saman.zamani.persiandate.PersianDate
 import java.util.Calendar
 import java.util.TimeZone

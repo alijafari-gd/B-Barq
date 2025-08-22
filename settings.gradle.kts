@@ -8,6 +8,7 @@ pluginManagement {
             }
         }
         maven("https://jitpack.io")
+        maven("https://maven.myket.ir")
         mavenCentral()
         gradlePluginPortal()
     }
@@ -18,6 +19,7 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven("https://jitpack.io")
+        maven("https://maven.myket.ir")
     }
 }
 

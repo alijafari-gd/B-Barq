@@ -1,4 +1,4 @@
-package com.aliJafari.bbarq
+package com.aliJafari.bbarq.utils
 
 class BillIDNotFoundException : Exception()
 class BillIDNot13Chars : Exception()

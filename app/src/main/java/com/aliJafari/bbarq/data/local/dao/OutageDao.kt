@@ -1,8 +1,9 @@
-package com.aliJafari.bbarq.data
+package com.aliJafari.bbarq.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import com.aliJafari.bbarq.data.model.Outage
 
 @Dao
 interface OutageDao {

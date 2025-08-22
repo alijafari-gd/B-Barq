@@ -1,4 +1,4 @@
-package com.aliJafari.bbarq.data
+package com.aliJafari.bbarq.data.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

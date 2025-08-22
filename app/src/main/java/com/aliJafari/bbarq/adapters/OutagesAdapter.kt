@@ -3,7 +3,7 @@ package com.aliJafari.bbarq.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.aliJafari.bbarq.data.Outage
+import com.aliJafari.bbarq.data.model.Outage
 import com.aliJafari.bbarq.databinding.ScheduleInfoLayoutBinding
 
 class OutagesAdapter(
