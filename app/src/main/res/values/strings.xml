@@ -65,4 +65,5 @@
     <string name="field_error_invalid_id_sub">Please provide a valid bill id</string>
     <string name="field_error_invalid_id_count">Must be 13 chars long</string>
     <string name="action_logout">Logout</string>
+    <string name="notification_permission_sub">Please allow the app to send notifications.</string>
 </resources>

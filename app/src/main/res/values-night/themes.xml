@@ -1,7 +1,16 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.BBarq" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
-    </style>
+        <style name="Base.Theme.BBarq" parent="Theme.Material3.Dark.NoActionBar">
+            <item name="colorPrimary">@color/md_theme_dark_primary</item>
+            <item name="colorOnPrimary">@color/md_theme_dark_onPrimary</item>
+            <item name="colorPrimaryContainer">@color/md_theme_dark_primaryContainer</item>
+            <item name="colorOnPrimaryContainer">@color/md_theme_dark_onPrimaryContainer</item>
+            <item name="colorError">@color/md_theme_light_error</item>
+            <item name="colorOnError">@color/md_theme_light_onError</item>
+            <item name="colorErrorContainer">@color/md_theme_light_errorContainer</item>
+            <item name="colorOnErrorContainer">@color/md_theme_light_onErrorContainer</item>=
+            <item name="colorSurface">@color/md_theme_light_surface</item>
+            <item name="colorOnSurface">@color/md_theme_dark_onSurface</item>
+            ……
+        </style>
 </resources>

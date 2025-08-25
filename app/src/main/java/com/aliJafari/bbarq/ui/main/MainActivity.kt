@@ -16,6 +16,7 @@ import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
@@ -32,6 +33,7 @@ import com.aliJafari.bbarq.ui.auth.LoginActivity
 import com.aliJafari.bbarq.utils.BillIDNot13Chars
 import com.aliJafari.bbarq.utils.BillIDNotFoundException
 import com.aliJafari.bbarq.utils.RequestUnsuccessful
+import com.google.android.material.color.DynamicColors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -45,7 +47,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         prefs = applicationContext.getSharedPreferences("my_prefs", MODE_PRIVATE)
-        super.onCreate(savedInstanceState)
 
         testToken()
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -61,9 +62,8 @@ class MainActivity : AppCompatActivity() {
             if (canPostNotifications) {
                 prefs.edit(commit = true) { putBoolean("reminder", isChecked) }
             } else {
-                @SuppressLint("InlinedApi") requestPermissions(
-                    arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1002
-                )
+                askNotificationPermission()
+
             }
         }
         checkPermissions()
@@ -111,11 +111,15 @@ class MainActivity : AppCompatActivity() {
                         Handler(Looper.getMainLooper()).postDelayed({
                             updateFab()
                         }, 100)
+                    } else {
+                        askNotificationPermission()
                     }
                 }
             }
         }
         updateFab()
+        super.onCreate(savedInstanceState)
+
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar)
@@ -124,6 +128,24 @@ class MainActivity : AppCompatActivity() {
         binding.main.progress.isActivated = false
         if (prefs.getString("billId", "")?.length == 13) {
             requestCurrentData()
+        }
+    }
+
+    private fun askNotificationPermission() {
+        if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
+            @SuppressLint("InlinedApi") requestPermissions(
+                arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1002
+            )
+        } else {
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                data = Uri.fromParts("package", packageName, null)
+            }
+            Toast.makeText(
+                this,
+                getString(R.string.notification_permission_sub),
+                Toast.LENGTH_SHORT
+            ).show()
+            startActivity(intent)
         }
     }
 

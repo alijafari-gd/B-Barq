@@ -28,7 +28,7 @@
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:src="@drawable/ic_bill"
-                app:tint="?attr/colorPrimaryDark" />
+                app:tint="?attr/colorPrimary" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/billId"
@@ -61,7 +61,7 @@
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:src="@drawable/ic_notification"
-                app:tint="?attr/colorPrimaryDark"/>
+                app:tint="?attr/colorPrimary"/>
 
             <LinearLayout
                 android:layout_width="0dp"
