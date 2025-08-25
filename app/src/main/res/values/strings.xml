@@ -59,4 +59,10 @@
     <string name="refresh">Refresh</string>
     <string name="action_about">About</string>
     <string name="title_activity_login">LoginActivity</string>
+    <string name="start_service_fab">Start Service</string>
+    <string name="stop_service_fab">Stop Service</string>
+    <string name="field_error_invalid_id">Bill ID is invalid</string>
+    <string name="field_error_invalid_id_sub">Please provide a valid bill id</string>
+    <string name="field_error_invalid_id_count">Must be 13 chars long</string>
+    <string name="action_logout">Logout</string>
 </resources>

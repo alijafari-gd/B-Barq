@@ -21,18 +21,17 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.core.widget.addTextChangedListener
-import com.aliJafari.bbarq.utils.BillIDNot13Chars
-import com.aliJafari.bbarq.utils.BillIDNotFoundException
 import com.aliJafari.bbarq.ForegroundService
 import com.aliJafari.bbarq.R
-import com.aliJafari.bbarq.utils.RequestUnsuccessful
 import com.aliJafari.bbarq.adapters.OutagesAdapter
 import com.aliJafari.bbarq.data.local.AuthStorage
 import com.aliJafari.bbarq.data.repository.OutageRepository
 import com.aliJafari.bbarq.databinding.ActivityMainBinding
 import com.aliJafari.bbarq.isServiceRunning
 import com.aliJafari.bbarq.ui.auth.LoginActivity
-import io.appmetrica.analytics.AppMetrica
+import com.aliJafari.bbarq.utils.BillIDNot13Chars
+import com.aliJafari.bbarq.utils.BillIDNotFoundException
+import com.aliJafari.bbarq.utils.RequestUnsuccessful
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -52,7 +51,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
 
         val canPostNotifications =
-            checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED || Build.VERSION.SDK_INT <= Build.VERSION_CODES.TIRAMISU
+            Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+                    checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+
         binding.main.reminderSwitch.isChecked =
             canPostNotifications && prefs.getBoolean("reminder", false)
         binding.main.reminderSwitch.setOnCheckedChangeListener { _, isChecked ->
@@ -78,8 +79,6 @@ class MainActivity : AppCompatActivity() {
                 prefs.edit(commit = true) {
                     putString("billId", text.toString())
                 }
-                val eventParameters = mapOf("bill id" to text)
-                AppMetrica.reportEvent("New person", eventParameters)
                 binding.main.refresh.performClick()
             }
         }
@@ -91,7 +90,7 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, ForegroundService::class.java)
             if (isServiceRunning(this, ForegroundService::class.java)) {
                 binding.fab.icon = ContextCompat.getDrawable(this, R.drawable.ic_pause)
-                binding.fab.text = "Stop Service"
+                binding.fab.text = getString(R.string.stop_service_fab)
                 binding.fab.setOnClickListener {
                     stopService(intent)
                     Handler(Looper.getMainLooper()).postDelayed({
@@ -100,17 +99,19 @@ class MainActivity : AppCompatActivity() {
                 }
             } else {
                 binding.fab.icon = ContextCompat.getDrawable(this, R.drawable.ic_play)
-                binding.fab.text = "Start Service"
+                binding.fab.text = getString(R.string.start_service_fab)
                 binding.fab.setOnClickListener {
                     if (binding.main.billId.isErrorEnabled || isLoading) return@setOnClickListener
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        startForegroundService(intent)
-                    } else {
-                        TODO()
+                    if (canPostNotifications) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            startForegroundService(intent)
+                        } else {
+                            startService(intent)
+                        }
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            updateFab()
+                        }, 100)
                     }
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        updateFab()
-                    }, 100)
                 }
             }
         }
@@ -164,7 +165,7 @@ class MainActivity : AppCompatActivity() {
                 }
             } catch (e: BillIDNot13Chars) {
                 runOnUiThread {
-                    binding.main.billId.error = "Must be 13 chars long"
+                    binding.main.billId.error = getString(R.string.field_error_invalid_id_count)
                     binding.main.billId.isErrorEnabled = true
                     binding.main.progress.visibility = View.GONE
                     binding.main.progress.isActivated = false
@@ -174,10 +175,11 @@ class MainActivity : AppCompatActivity() {
                 runOnUiThread {
                     binding.main.progress.visibility = View.GONE
                     binding.main.progress.isActivated = false
-                    binding.main.billId.error = "Bill ID is invalid"
+                    binding.main.billId.error = getString(R.string.field_error_invalid_id)
                     binding.main.billId.isErrorEnabled = true
                     binding.main.networkError.root.visibility = View.VISIBLE
-                    binding.main.networkError.error.text = "Please provide a valid bill id"
+                    binding.main.networkError.error.text =
+                        getString(R.string.field_error_invalid_id_sub)
                     isLoading = false
                 }
             } catch (e: RequestUnsuccessful) {
@@ -246,10 +248,17 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_settings -> {
+            R.id.action_about -> {
                 val browserIntent =
-                    Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/alijafari-gd/B-Barq"))
+                    Intent(Intent.ACTION_VIEW, "https://github.com/alijafari-gd/B-Barq".toUri())
                 startActivity(browserIntent)
+                true
+            }
+            R.id.action_logout -> {
+                AuthStorage(this).clearToken()
+                startActivity(
+                    Intent(this, LoginActivity::class.java)
+                )
                 true
             }
 

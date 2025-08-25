@@ -27,7 +27,7 @@ class ForegroundService : Service() {
 
     private var billId: String = ""
     val handler = Handler(Looper.getMainLooper())
-    private val repository = OutageRepository(applicationContext)
+    lateinit var repository : OutageRepository
     private lateinit var notificationManager: NotificationManager
     private lateinit var prefs: SharedPreferences
     val channelId = "blackout_checker_channel"
@@ -39,6 +39,7 @@ class ForegroundService : Service() {
             fetchApiData()
             return START_STICKY
         }
+        repository = OutageRepository(applicationContext)
         notificationManager = getSystemService(android.app.NotificationManager::class.java)
         prefs = applicationContext.getSharedPreferences("my_prefs", MODE_PRIVATE)
         billId = prefs.getString("billId", "").toString()

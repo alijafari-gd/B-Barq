@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,6 +35,7 @@ class LoginActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContent {
             MaterialTheme {
                 LoginScreen(vm, this)
@@ -58,7 +60,7 @@ fun LoginScreen(vm: LoginViewModel, context: Context) {
                 OutlinedTextField(
                     value = phone,
                     onValueChange = { phone = it },
-                    label = { Text("Phone") })
+                    label = { Text("Phone", color = MaterialTheme.colorScheme.onSurface) })
                 Spacer(Modifier.height(12.dp))
                 Button(onClick = { vm.sendOtp(phone) }) { Text("Send Code") }
                 Spacer(Modifier.height(12.dp))
@@ -69,7 +71,7 @@ fun LoginScreen(vm: LoginViewModel, context: Context) {
                 OutlinedTextField(
                     value = code,
                     onValueChange = { code = it },
-                    label = { Text("SMS Code") })
+                    label = { Text("SMS Code", color = MaterialTheme.colorScheme.onSurface) })
                 Spacer(Modifier.height(12.dp))
                 Button(onClick = { vm.verifyOtp(context, code) }) { Text("Verify Code") }
             }
@@ -83,7 +85,7 @@ fun LoginScreen(vm: LoginViewModel, context: Context) {
             }
 
             is LoginUiState.Success -> {
-                Text("Login successful. Token: ${(state as LoginUiState.Success).token.take(20)}...")
+                Text("Login successful. Token: ${(state as LoginUiState.Success).token.take(20)}...", color = MaterialTheme.colorScheme.onSurface)
                 Spacer(Modifier.height(12.dp))
                 Button(onClick = {
                     val i: Intent = context.getPackageManager()
