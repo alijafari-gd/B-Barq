@@ -22,6 +22,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.lifecycleScope
 import com.aliJafari.bbarq.ForegroundService
 import com.aliJafari.bbarq.R
 import com.aliJafari.bbarq.adapters.OutagesAdapter
@@ -36,6 +37,7 @@ import com.aliJafari.bbarq.utils.RequestUnsuccessful
 import com.google.android.material.color.DynamicColors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -45,13 +47,15 @@ class MainActivity : AppCompatActivity() {
 
     private var isLoading = false
 
+    var canPostNotifications = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         prefs = applicationContext.getSharedPreferences("my_prefs", MODE_PRIVATE)
 
         testToken()
         binding = ActivityMainBinding.inflate(layoutInflater)
 
-        val canPostNotifications =
+        canPostNotifications =
             Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
                     checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
 
@@ -132,7 +136,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun askNotificationPermission() {
-        if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
+        canPostNotifications =
+            Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+                    checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+        if (canPostNotifications) return
+        if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS).not()) {
             @SuppressLint("InlinedApi") requestPermissions(
                 arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1002
             )
